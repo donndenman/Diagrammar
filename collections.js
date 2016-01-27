@@ -121,7 +121,8 @@ LinkedList.prototype.find = function(value) {
 };
 
 //------------------------------------------------------------------------------
-// Simple Queue.
+// Simple Queue - a trivial queue implementation used to verify tests.
+// The head of the queue is at the beginning of the backing array.
 
 function SimpleQueue() {
 	this.q_ = [];
@@ -140,12 +141,54 @@ SimpleQueue.prototype = {
   empty: function() {
     return this.q_.length === 0;
   },
-  
-  flush: function() {
+
+  clear: function() {
     var result = this.q_.slice(0);
-	this.q_.length = 0;
+	this.q_ = [];
 	return result;
   }
+};
+
+//------------------------------------------------------------------------------
+// Queue, a simple queue implementation.
+// The head of the queue is at the beginning of the backing array.
+
+function Queue() {
+	this.head_ = 0;
+	this.headLimit_ = 1000;
+	this.sliceMin_ = 10;
+	this.q_ = [];
+}
+
+Queue.prototype = {
+	// TODO(donnd): inherit from SimpleQueue instead of copying?
+    enqueue: function(item) {
+      this.q_.push(item);
+      return this;
+    },
+
+	dequeue: function() {
+		var result = this.q_[this.head_];
+		delete this.q_[this.head_];
+		this.head_ = this.head_ + 1;
+		if (this.head_ >= this.headLimit_ ||
+		    this.head_ > this.sliceMin_ && this.head_ > (this.q_.length - this.head_)) {
+			this.q_ = this.q_.slice(this.head_);
+			this.head_ = 0;
+		}
+		return result;
+	},
+
+    empty: function() {
+      return this.q_.length === this.head_;
+    },
+
+    clear: function() {
+      var result = this.q_.slice(this.head_);
+      this.q_ = [];
+      this.head_ = 0;
+      return result;
+    }
 };
 
 //------------------------------------------------------------------------------
@@ -300,6 +343,7 @@ return {
   LinkedList: LinkedList,
 
   SimpleQueue: SimpleQueue,
+  Queue: Queue,
   PriorityQueue: PriorityQueue,
 
   SelectionSet: SelectionSet,
