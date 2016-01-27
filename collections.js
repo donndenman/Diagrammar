@@ -141,7 +141,11 @@ SimpleQueue.prototype = {
   empty: function() {
     return this.q_.length === 0;
   },
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 5aef4fc9ec0ce6409cc7ee1b8e4e8635fbb07688
   clear: function() {
     var result = this.q_.slice(0);
 	this.q_ = [];
